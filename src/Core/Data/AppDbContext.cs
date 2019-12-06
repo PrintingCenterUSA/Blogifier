@@ -26,6 +26,7 @@ namespace Core.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.HasDefaultSchema("help");
             base.OnModelCreating(builder);
         }
     }
