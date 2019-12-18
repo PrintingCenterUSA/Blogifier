@@ -212,7 +212,7 @@ namespace Core.Data
             BlogPost post;
             var field = _db.CustomFields.Where(f => f.AuthorId == 0 && f.Name == Constants.BlogCover).FirstOrDefault();
             var cover = field == null ? "" : field.Content;
-
+            string idPath = GetIdPath(item);
             if (item.Id == 0)
             {
                 post = new BlogPost
@@ -225,7 +225,10 @@ namespace Core.Data
                     Cover = item.Cover ?? cover,
                     AuthorId = item.Author.Id,
                     IsFeatured = item.Featured,
-                    Published = item.Published
+                    Published = item.Published,
+                    ParentId = item.ParentId,
+                    DisplayOrder = item.DisplayOrder==null ? 0 : (int)item.DisplayOrder,
+                    IdPath = idPath
                 };
                 _db.BlogPosts.Add(post);
                 await _db.SaveChangesAsync();
@@ -245,6 +248,9 @@ namespace Core.Data
                 post.AuthorId = item.Author.Id;
                 post.Published = item.Published;
                 post.IsFeatured = item.Featured;
+                post.ParentId = item.ParentId;
+                post.DisplayOrder = item.DisplayOrder == null ? 0 : (int)item.DisplayOrder;
+                post.IdPath = idPath;
                 await _db.SaveChangesAsync();
             }
             return await Task.FromResult(item);
@@ -303,7 +309,10 @@ namespace Core.Data
                 Rating = p.Rating,
                 Published = p.Published,
                 Featured = p.IsFeatured,
-                Author = _db.Authors.Single(a => a.Id == p.AuthorId)
+                Author = _db.Authors.Single(a => a.Id == p.AuthorId),
+                ParentId = p.ParentId,
+                DisplayOrder = p.DisplayOrder,
+                IdPath = p.IdPath
             };
             if(post.Author != null)
             {
@@ -329,7 +338,10 @@ namespace Core.Data
                 Rating = p.Rating,
                 Published = p.Published,
                 Featured = p.IsFeatured,
-                Author = _db.Authors.Single(a => a.Id == p.AuthorId)
+                Author = _db.Authors.Single(a => a.Id == p.AuthorId),
+                ParentId = p.ParentId,
+                DisplayOrder = p.DisplayOrder,
+                IdPath = p.IdPath
             }).Distinct().ToList();
         }
 
@@ -362,6 +374,33 @@ namespace Core.Data
             }
 
             return items;
+        }
+
+        string GetIdPath(PostItem item)
+        {
+            string idPath = "";
+            List<int> idList = new List<int>();
+
+            if (item.ParentId != null && item.ParentId > 0)
+            {
+                idList.Add((int)item.ParentId);
+                var parentPost = _db.BlogPosts.Single(p => p.Id == item.ParentId);
+                while (parentPost.ParentId != null && parentPost.ParentId > 0)
+                {
+                    idList.Add((int)parentPost.ParentId);
+                    parentPost = _db.BlogPosts.Single(p => p.Id == parentPost.ParentId);
+                }
+                
+                for(int i= idList.Count-1; i>=0; i--)
+                {
+                    idPath += string.Format("/{0}", idList[i].ToString());
+                }
+            }
+            else
+            {
+                idPath = "/";
+            }
+            return idPath;
         }
     }
 

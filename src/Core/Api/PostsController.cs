@@ -107,7 +107,7 @@ namespace Core.Api
 
                 return Ok(new PageListModel { Posts = results, Pager = pager });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Database Failure");
             }
@@ -315,7 +315,10 @@ namespace Core.Api
                     var existing = _data.BlogPosts.Single(p => p.Id == post.Id);
                     alreadyPublished = existing.Published > DateTime.MinValue;
                 }
-                post.Slug = await GetSlug(post.Id, post.Title);
+                int displayOrder = post.DisplayOrder == null ? 0 : (int)post.DisplayOrder;
+                post.DisplayOrder = displayOrder;
+                if(string.IsNullOrEmpty(post.Slug))
+                    post.Slug = await GetSlug(post.Id, post.Title);
                 var saved = await _data.BlogPosts.SaveItem(post);
 
                 if(post.IsPublished && !alreadyPublished)
@@ -415,6 +418,18 @@ namespace Core.Api
                     id = objAuthor.Id;
             }
             return id;
+        }
+
+        /// <summary>
+        /// Get all posts for the parent page selection
+        /// </summary>
+        /// <returns>Post item</returns>
+        [HttpGet("allposts")]
+        [EnableCors("AllowOrigin")]
+        public IEnumerable<BlogPost> GetAllPosts()
+        {
+            var posts = _data.BlogPosts.All();
+            return posts;
         }
     }
 }

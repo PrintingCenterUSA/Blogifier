@@ -38,5 +38,9 @@ namespace Core.Data
         public bool IsFeatured { get; set; }
 
         public DateTime Published { get; set; }
+
+        public Nullable<int> ParentId { get; set; }
+        public int DisplayOrder { get; set; }
+        public string IdPath { get; set; }
     }
 }

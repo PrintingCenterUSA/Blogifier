@@ -204,6 +204,12 @@
             <param name="id">Post ID</param>
             <returns>Success or failure</returns>
         </member>
+        <member name="M:Core.Api.PostsController.GetAllPosts">
+            <summary>
+            Get all posts for the parent page selection
+            </summary>
+            <returns>Post item</returns>
+        </member>
         <member name="M:Core.Api.SecurityController.GetUser">
             <summary>
             Get user authentication info

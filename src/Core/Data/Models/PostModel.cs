@@ -51,6 +51,9 @@ namespace Core.Data
 
         public Author Author { get; set; }
         public SaveStatus Status { get; set; }
+        public int? ParentId { get; set; }
+        public int? DisplayOrder { get; set; }
+        public string IdPath { get; set; }
 
         #region IEquatable
         // to be able compare two posts

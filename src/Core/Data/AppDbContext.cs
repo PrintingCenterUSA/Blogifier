@@ -27,6 +27,10 @@ namespace Core.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.HasDefaultSchema("help");
+            builder.Entity<BlogPost>(entity => 
+            {
+                entity.Property(r => r.DisplayOrder).HasDefaultValue(0);
+            });
             base.OnModelCreating(builder);
         }
     }

@@ -122,7 +122,7 @@ Blogifier is simple, beautiful, light-weight open source blog written in .NET Co
 
 The [demo site](http://blogifier.azurewebsites.net) is a playground to check out Blogifier features. You can write and publish posts, upload files and test application before install. And no worries, it is just a sandbox and will clean itself.
 
-![Demo-1.png](/data/admin/admin-editor.png)";
+![Demo-1.png](/help/data/admin/admin-editor.png)";
 
         public static readonly string PostFeatures = @"### User Management
 Blogifier is multi-user application with simple admin/user roles, allowing every user write and publish posts and administrator create new users.
@@ -130,7 +130,7 @@ Blogifier is multi-user application with simple admin/user roles, allowing every
 ### Content Management
 Built-in file manager allows upload images and files and use them as links in the post editor.
 
-![file-mgr.png](/data/admin/admin-files.png)
+![file-mgr.png](/help/data/admin/admin-files.png)
 
 ### Plugin System
 Blogifier built as highly extendable application allowing modules to be side-loaded and added to blog at runtime.
