@@ -327,7 +327,7 @@ namespace Core.Api
                     await SendNewsletters(savedPost);
                 }
 
-                return Created($"admin/posts/edit?id={saved.Id}", saved);
+                return Created($"admin/page/edit?id={saved.Id}", saved);
             }
             catch (Exception ex)
             {

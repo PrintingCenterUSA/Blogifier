@@ -29,7 +29,7 @@
 
   function filter() {
     var status = $('input[name=status-filter]:checked').val();
-    var url = webRoot + "admin/posts?status=" + status;
+    var url = webRoot + "admin/page?status=" + status;
     window.location.href = url;
   }
 
