@@ -154,6 +154,7 @@
                      axios.get(getUrl('api/posts/allposts'))
                         .then(response => {
                             this.allPosts = response.data;
+                            this.allPosts.splice(0, 0, {id:0,title:'Root'}); 
                         })
                         .catch(function (error) { toastr.error(error); });
                 },
