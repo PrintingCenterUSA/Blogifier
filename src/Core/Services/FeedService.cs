@@ -36,7 +36,7 @@ namespace Core.Services
                 {
                     Title = post.Title,
                     Description = post.Content,
-                    Id = $"{host}/posts/{post.Slug}",
+                    Id = $"{host}/page/{post.Slug}",
                     Published = post.Published,
                     LastUpdated = post.Published,
                     ContentType = "html",

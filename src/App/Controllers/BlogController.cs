@@ -50,7 +50,7 @@ namespace App.Controllers
         [Authorize]
         public IActionResult Admin()
         {
-            return Redirect("~/admin/posts");
+            return Redirect("~/admin/page");
         }
 
         [HttpPost("account/logout")]
