@@ -593,5 +593,29 @@
       "zh-cn": "联系",
       "zh-tw": "聯系"
     }
+  },
+  "slug": {
+    "Values": {
+      "en-US": "Slug",
+      "ru-RU": "путь",
+      "zh-cn": "路径",
+      "zh-tw": "路徑"
+    }
+  },
+  "parentPage": {
+    "Values": {
+      "en-US": "Parent Page",
+      "ru-RU": "Родительская страница",
+      "zh-cn": "上级页面",
+      "zh-tw": "上級頁面"
+    }
+  },
+  "displayOrder": {
+    "Values": {
+      "en-US": "Display Order",
+      "ru-RU": "Порядок отображения",
+      "zh-cn": "显示顺序",
+      "zh-tw": "顯示順序"
+    }
   }
 }
