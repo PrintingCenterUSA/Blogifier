@@ -1,4 +1,5 @@
 ﻿using Core.Data;
+using Core.Data.Models;
 using Core.Helpers;
 using Core.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -315,6 +316,10 @@ namespace Core.Api
                     var existing = _data.BlogPosts.Single(p => p.Id == post.Id);
                     alreadyPublished = existing.Published > DateTime.MinValue;
                 }
+                else
+                {
+                    post.ParentId = 0;
+                }
                 int displayOrder = post.DisplayOrder == null ? 0 : (int)post.DisplayOrder;
                 post.DisplayOrder = displayOrder;
                 if(string.IsNullOrEmpty(post.Slug))
@@ -430,6 +435,15 @@ namespace Core.Api
         {
             var posts = _data.BlogPosts.All();
             return posts;
+        }
+        [HttpGet("pageCatalog")]
+        [EnableCors("AllowOrigin")]
+        public PageCatalog GetPageCatalog()
+        {
+            //var posts = _data.BlogPosts.All();
+            //return posts;
+            var pageCatalog = _data.BlogPosts.GetPageCatalog();
+            return pageCatalog;
         }
     }
 }

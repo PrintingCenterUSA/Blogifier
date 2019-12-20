@@ -1,4 +1,5 @@
-﻿using Core.Helpers;
+﻿using Core.Data.Models;
+using Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace Core.Data
         Task<PostItem> SaveItem(PostItem item);
         Task SaveCover(int postId, string asset);
         Task<IEnumerable<CategoryItem>> Categories();
+        PageCatalog GetPageCatalog();
     }
 
     public class PostRepository : Repository<BlogPost>, IPostRepository
@@ -401,6 +403,12 @@ namespace Core.Data
                 idPath = "/";
             }
             return idPath;
+        }
+        public PageCatalog GetPageCatalog()
+        {
+            var posts = _db.BlogPosts.Where(p => p.Published > DateTime.MinValue);
+            PageCatalog pageCatalog = new PageCatalog(null, posts);
+            return pageCatalog;
         }
     }
 
