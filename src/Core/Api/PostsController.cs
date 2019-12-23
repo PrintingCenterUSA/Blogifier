@@ -445,5 +445,49 @@ namespace Core.Api
             var pageCatalog = _data.BlogPosts.GetPageCatalog();
             return pageCatalog;
         }
+
+        /// <summary>
+        /// Search blog posts by term (CORS enabled) -- customized by PCUSA Robin, only for front end search
+        /// </summary>
+        /// <param name="term">Search term</param>
+        /// <param name="currentPageId">Current page id, only search the pages under this page if the value is greater than zero</param>
+        /// <param name="include">Posts to include: all by default; F - featured, D - drafts, P - published</param>
+        /// <param name="page">Page number</param>
+        /// <param name="format">Otput format: html or markdown; default = html;</param>
+        /// <returns>Model with list of posts and pager</returns>
+        [HttpGet("front-search/{term}")]
+        [EnableCors("AllowOrigin")]
+        public async Task<ActionResult<PageListModel>> Search(
+            string term,
+            [FromQuery]int currentPageId = 0,
+            [FromQuery]string include = "",
+            [FromQuery]int page = 1,
+            [FromQuery]string format = "html")
+        {
+            try
+            {
+                var blog = await _data.CustomFields.GetBlogSettings();
+                IEnumerable<PostItem> results;
+                var pager = new Pager(page, blog.ItemsPerPage);
+                var authorId = 0;
+
+                results = await _data.BlogPosts.Search(pager, term, authorId, include, !User.Identity.IsAuthenticated, currentPageId);
+
+                if (format.ToUpper() == "HTML")
+                {
+                    foreach (var p in results)
+                    {
+                        p.Description = p.Description.MdToHtml();
+                        p.Content = p.Content.MdToHtml();
+                    }
+                }
+
+                return Ok(new PageListModel { Posts = results, Pager = pager });
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Database Failure");
+            }
+        }
     }
 }

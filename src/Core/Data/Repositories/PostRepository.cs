@@ -15,7 +15,7 @@ namespace Core.Data
         Task<IEnumerable<PostItem>> GetList(Expression<Func<BlogPost, bool>> predicate, Pager pager);
         Task<IEnumerable<PostItem>> GetList(Pager pager, int author = 0, string category = "", string include = "", bool sanitize = false);
         Task<IEnumerable<PostItem>> GetPopular(Pager pager, int author = 0);
-        Task<IEnumerable<PostItem>> Search(Pager pager, string term, int author = 0, string include = "", bool sanitize = false);
+        Task<IEnumerable<PostItem>> Search(Pager pager, string term, int author = 0, string include = "", bool sanitize = false, int currentPageId=0);
         Task<PostItem> GetItem(Expression<Func<BlogPost, bool>> predicate, bool sanitize = false);
         Task<PostModel> GetModel(string slug);
         Task<PostItem> SaveItem(PostItem item);
@@ -114,7 +114,7 @@ namespace Core.Data
             return await Task.FromResult(items);
         }
 
-        public async Task<IEnumerable<PostItem>> Search(Pager pager, string term, int author = 0, string include = "", bool sanitize = false)
+        public async Task<IEnumerable<PostItem>> Search(Pager pager, string term, int author = 0, string include = "", bool sanitize = false, int currentPageId =0)
         {
             var skip = pager.CurrentPage * pager.ItemsPerPage - pager.ItemsPerPage;
                        
@@ -151,7 +151,28 @@ namespace Core.Data
             var posts = new List<PostItem>();
             for (int i = 0; i < results.Count; i++)
             {
-                posts.Add(results[i].Item);
+                if (currentPageId != 0)
+                {
+                    //check if the post does belong to current posts tree
+                    var item = results[i].Item;
+                    if (item.Id == currentPageId)
+                        posts.Add(item);
+                    else
+                    {
+                        string idPath = string.Empty;
+                        if (item.ParentId != null && item.ParentId > 0 && !string.IsNullOrEmpty(item.IdPath) && !item.IdPath.Equals("/"))
+                            idPath = item.IdPath;
+                        else
+                            idPath = GetIdPath(item);   //id path is not generated yet
+
+                        var pages = idPath.Split('/').ToList();
+                        var fItem = pages.Where(p => p.Equals(currentPageId.ToString())).FirstOrDefault();
+                        if (!string.IsNullOrEmpty(fItem))
+                            posts.Add(item);
+                    }
+                }
+                else
+                    posts.Add(results[i].Item);
             }
             pager.Configure(posts.Count);
             return await Task.Run(() => posts.Skip(skip).Take(pager.ItemsPerPage).ToList());

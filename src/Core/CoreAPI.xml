@@ -210,6 +210,17 @@
             </summary>
             <returns>Post item</returns>
         </member>
+        <member name="M:Core.Api.PostsController.Search(System.String,System.Int32,System.String,System.Int32,System.String)">
+            <summary>
+            Search blog posts by term (CORS enabled) -- customized by PCUSA Robin, only for front end search
+            </summary>
+            <param name="term">Search term</param>
+            <param name="currentPageId">Current page id, only search the pages under this page if the value is greater than zero</param>
+            <param name="include">Posts to include: all by default; F - featured, D - drafts, P - published</param>
+            <param name="page">Page number</param>
+            <param name="format">Otput format: html or markdown; default = html;</param>
+            <returns>Model with list of posts and pager</returns>
+        </member>
         <member name="M:Core.Api.SecurityController.GetUser">
             <summary>
             Get user authentication info
