@@ -139,6 +139,13 @@
                     description: "",
                     slug: ""
                 },
+                postOrigin: {
+                    id: 0,
+                    categories: "",
+                    content: "",
+                    description: "",
+                    slug: ""
+                },
                  allPosts:[]
             },
             methods: {
@@ -146,6 +153,7 @@
                     axios.get(getUrl('api/posts/' + this.id + '?format=markdown'))
                         .then(response => {
                             this.post = response.data;
+                            this.postOrigin = JSON.parse(JSON.stringify(this.post));
                             simplemde = getEditor(this.post);
                             $('#Post_Id').val(fromQueryString('id'));
                         })
@@ -221,6 +229,10 @@
                 },
                 isDate: function (date) {
                     return (new Date(date) !== "Invalid Date") && !isNaN(new Date(date));
+                },
+                hasDataUpdated: function () {
+                    this.post.content = simplemde.value();
+                    return !_.isEqual(this.post, this.postOrigin);
                 }
             },
             beforeMount() {
@@ -230,5 +242,15 @@
                 this.load();
             }
         })
+
+        window.onbeforeunload = function (event) {
+            event = event || window.event;
+            //event.returnValue = 'You have unsaved changes, are you sure leave?';
+            if (vm.hasDataUpdated()) {
+                var message = 'You have unsaved changes, are you sure leave?';
+                event.returnValue = message;
+                return message;
+            }
+    }
     </script>
 }
