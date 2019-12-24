@@ -132,6 +132,7 @@
             data: {
                 isAdmin: isAdmin(),
                 id: "0",
+                isForceLeavePage:false,
                 post: {
                     id: 0,
                     categories: "",
@@ -150,7 +151,7 @@
                     parentId:0,
                     displayOrder:0
                 },
-                 allPosts:[]
+                allPosts:[]
             },
             methods: {
                 load: function () {
@@ -170,6 +171,7 @@
                         .catch(function (error) { toastr.error(error); });
                 },
                 save: function (flag) {
+                    let self = this;
                     if (flag === 'P') {
                         this.post.published = (new Date()).toUTCString();
                     }
@@ -201,6 +203,7 @@
                     axios.post(webRoot + 'api/posts', this.post)
                         .then(function (response) {
                             toastr.success('Created');
+                            self.isForceLeavePage = true;
                             setTimeout(function () { location.href = getUrl(response.headers.location); }, 1000);
                         })
                         .catch(function (error) {
@@ -214,11 +217,13 @@
                     this.save('U');   
                 },
                 remove: function () {
+                    let self = this;
                     var result = confirm("Please confirm removing this theme");
                     if (result) {
                         axios.delete(webRoot + 'api/posts/remove/' + this.post.id)
                             .then(response => {
                                 toastr.success('Removed');
+                                self.isForceLeavePage = true;
                                 setTimeout(function () { location.href = getUrl('admin/page'); }, 1000);
                             })
                             .catch(function (error) { toastr.error(error); });
@@ -235,10 +240,11 @@
                     return (new Date(date) !== "Invalid Date") && !isNaN(new Date(date));
                 },
                 hasDataUpdated: function () {
+                    if (this.isForceLeavePage) {
+                        return false;
+                    }
                     this.post.content = simplemde.value();
-                    debugger
-                    var diff = difference(this.post, this.postOrigin);
-                    debugger;
+                    //var diff = difference(this.post, this.postOrigin);
                     return !_.isEqual(this.post, this.postOrigin);
                 },
                 onKeyUpDisplayOrder: function () {
