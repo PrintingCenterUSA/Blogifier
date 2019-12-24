@@ -2,3 +2,36 @@
 {
     margin-top:0;
 }
+.post-single .post-meta
+{
+    display: none;
+}
+.post-single .post-title
+{
+    margin-bottom: 1rem;
+}
+.post-header
+{
+    margin-bottom: 2.5rem;
+}
+#newsletter
+{
+    display: none;
+}
+.page-cover
+{
+    display: none;
+}
+.blog-footer
+{
+    display: none;
+}
+.form-control:focus
+{
+    box-shadow: none;
+}
+.search-noresult
+{
+    text-align: center;
+    font-size: 3rem;
+}
