@@ -16,7 +16,7 @@ namespace Core.Data.Models
             IEnumerable<BlogPost> childPages;
             if (page == null)
             {
-                childPages = allPages.Where(eml => eml.ParentId == 0);
+                childPages = allPages.Where(eml => eml.ParentId == 0 && !eml.Slug.Equals("home"));
             }
             else
             {
