@@ -101,7 +101,7 @@
                             </div>
                             <div class="form-group">
                                 <label class="form-group-label">@Localizer["displayOrder"]</label>
-                                <input v-model="post.displayOrder" class="form-control" type="number"></input>
+                                <input v-model="post.displayOrder" class="form-control" type="number" @@keyup="onKeyUpDisplayOrder"></input>
                             </div>
                             <div class="form-group">
                                 <label class="form-group-label">@Localizer["published"]</label>
@@ -137,14 +137,18 @@
                     categories: "",
                     content: "",
                     description: "",
-                    slug: ""
+                    slug: "",
+                    parentId: 0,
+                    displayOrder:0
                 },
                 postOrigin: {
                     id: 0,
                     categories: "",
                     content: "",
                     description: "",
-                    slug: ""
+                    slug: "",
+                    parentId:0,
+                    displayOrder:0
                 },
                  allPosts:[]
             },
@@ -232,7 +236,13 @@
                 },
                 hasDataUpdated: function () {
                     this.post.content = simplemde.value();
+                    debugger
+                    var diff = difference(this.post, this.postOrigin);
+                    debugger;
                     return !_.isEqual(this.post, this.postOrigin);
+                },
+                onKeyUpDisplayOrder: function () {
+                    this.post.displayOrder = Number( this.post.displayOrder);
                 }
             },
             beforeMount() {
