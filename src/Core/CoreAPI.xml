@@ -221,6 +221,14 @@
             <param name="format">Otput format: html or markdown; default = html;</param>
             <returns>Model with list of posts and pager</returns>
         </member>
+        <member name="M:Core.Api.PostsController.GetByPostId(System.Int32,System.String)">
+            <summary>
+            Get single post by Slug (CORS enabled)
+            </summary>
+            <param name="postId">post id path</param>
+            <param name="format">Otput format: html or markdown; default = html;</param>
+            <returns>Post model</returns>
+        </member>
         <member name="M:Core.Api.SecurityController.GetUser">
             <summary>
             Get user authentication info

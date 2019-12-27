@@ -351,6 +351,11 @@ namespace Core.Api
         {           
             try
             {
+                var subPosts = _data.BlogPosts.Find(p => p.ParentId == id);
+                if (subPosts.Count() > 0) 
+                {
+                    return Ok(new { ErrorMsg = "Remove is disallowed. There are sub posts related to current post." }) ;
+                }
                 var post = _data.BlogPosts.Single(p => p.Id == id);
                 var author = _data.Authors.Single(a => a.Id == post.AuthorId);
                 var user = _data.Authors.Single(a => a.AppUserName == User.Identity.Name);
@@ -487,6 +492,45 @@ namespace Core.Api
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Database Failure");
+            }
+        }
+
+        /// <summary>
+        /// Get single post by Slug (CORS enabled)
+        /// </summary>
+        /// <param name="postId">post id path</param>
+        /// <param name="format">Otput format: html or markdown; default = html;</param>
+        /// <returns>Post model</returns>
+        [HttpGet("bypostid/{postId}")]
+        [EnableCors("AllowOrigin")]
+        public async Task<PostModel> GetByPostId(int postId, [FromQuery]string format = "html")
+        {
+            if (postId > 0)
+            {
+                var model = await _data.BlogPosts.GetModelByPostId(postId);
+                model.Blog = await _data.CustomFields.GetBlogSettings();
+
+                if (!User.Identity.IsAuthenticated)
+                {
+                    model.Post.Author.Email = Constants.DummyEmail;
+
+                    if (model.Older != null)
+                        model.Older.Author.Email = Constants.DummyEmail;
+                    if (model.Newer != null)
+                        model.Newer.Author.Email = Constants.DummyEmail;
+                }
+
+                if (format.ToUpper() == "HTML")
+                {
+                    model.Post.Description = model.Post.Description.MdToHtml();
+                    model.Post.Content = model.Post.Content.MdToHtml();
+                }
+                return model;
+            }
+            else
+            {
+                var blog = await _data.CustomFields.GetBlogSettings();
+                return new PostModel { Blog = blog };
             }
         }
     }

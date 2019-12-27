@@ -18,6 +18,7 @@ namespace Core.Data
         Task<IEnumerable<PostItem>> Search(Pager pager, string term, int author = 0, string include = "", bool sanitize = false, int currentPageId=0);
         Task<PostItem> GetItem(Expression<Func<BlogPost, bool>> predicate, bool sanitize = false);
         Task<PostModel> GetModel(string slug);
+        Task<PostModel> GetModelByPostId(int postId);
         Task<PostItem> SaveItem(PostItem item);
         Task SaveCover(int postId, string asset);
         Task<IEnumerable<CategoryItem>> Categories();
@@ -224,6 +225,44 @@ namespace Core.Data
             }
 
             var post = _db.BlogPosts.Single(p => p.Slug == slug);
+            post.PostViews++;
+            await _db.SaveChangesAsync();
+
+            return await Task.FromResult(model);
+        }
+
+        public async Task<PostModel> GetModelByPostId(int postId)
+        {
+            var model = new PostModel();
+
+            var all = _db.BlogPosts
+                .OrderByDescending(p => p.IsFeatured)
+                .ThenByDescending(p => p.Published).ToList();
+
+            if (all != null && all.Count > 0)
+            {
+                for (int i = 0; i < all.Count; i++)
+                {
+                    if (all[i].Id == postId)
+                    {
+                        model.Post = PostToItem(all[i]);
+
+                        if (i > 0 && all[i - 1].Published > DateTime.MinValue)
+                        {
+                            model.Newer = PostToItem(all[i - 1]);
+                        }
+
+                        if (i + 1 < all.Count && all[i + 1].Published > DateTime.MinValue)
+                        {
+                            model.Older = PostToItem(all[i + 1]);
+                        }
+
+                        break;
+                    }
+                }
+            }
+
+            var post = _db.BlogPosts.Single(p => p.Id == postId);
             post.PostViews++;
             await _db.SaveChangesAsync();
 

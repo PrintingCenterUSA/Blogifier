@@ -165,11 +165,19 @@
                 var result = confirm("Please confirm removing this post");
                 if (result) {
                     axios.delete(webRoot + 'api/posts/remove/' + id)
-                    .then(response => {
-                        toastr.success(response.data);
-                        setTimeout(function(){ location.reload(); }, 1000);
+                        .then(response => {
+                            debugger
+                            if (response.data.errorMsg && response.data.errorMsg != '') {
+                                toastr.error(response.data.errorMsg);
+                            }
+                            else {
+                                toastr.success(response.data);
+                                setTimeout(function(){ location.reload(); }, 1000);
+                            }
                     })
-                    .catch(function (error) { toastr.error(error); });
+                        .catch(function (error) {
+                            toastr.error(error);
+                    });
                 }
                 return false;
             },
