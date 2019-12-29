@@ -42,5 +42,7 @@ namespace Core.Data
         public Nullable<int> ParentId { get; set; }
         public int DisplayOrder { get; set; }
         public string IdPath { get; set; }
+
+        public string NavHeader { get; set; }
     }
 }

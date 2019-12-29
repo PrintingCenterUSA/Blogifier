@@ -290,7 +290,8 @@ namespace Core.Data
                     Published = item.Published,
                     ParentId = item.ParentId,
                     DisplayOrder = item.DisplayOrder==null ? 0 : (int)item.DisplayOrder,
-                    IdPath = idPath
+                    IdPath = idPath,
+                    NavHeader = item.NavHeader
                 };
                 _db.BlogPosts.Add(post);
                 await _db.SaveChangesAsync();
@@ -313,6 +314,7 @@ namespace Core.Data
                 post.ParentId = item.ParentId;
                 post.DisplayOrder = item.DisplayOrder == null ? 0 : (int)item.DisplayOrder;
                 post.IdPath = idPath;
+                post.NavHeader = item.NavHeader;
                 await _db.SaveChangesAsync();
             }
             return await Task.FromResult(item);
@@ -374,7 +376,8 @@ namespace Core.Data
                 Author = _db.Authors.Single(a => a.Id == p.AuthorId),
                 ParentId = p.ParentId,
                 DisplayOrder = p.DisplayOrder,
-                IdPath = p.IdPath
+                IdPath = p.IdPath,
+                NavHeader = p.NavHeader
             };
             if(post.Author != null)
             {

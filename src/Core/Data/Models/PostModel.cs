@@ -55,6 +55,8 @@ namespace Core.Data
         public int? DisplayOrder { get; set; }
         public string IdPath { get; set; }
 
+        public string NavHeader { get; set; }
+
         #region IEquatable
         // to be able compare two posts
         // if(post1 == post2) { ... }
