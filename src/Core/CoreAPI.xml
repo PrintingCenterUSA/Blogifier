@@ -223,7 +223,7 @@
         </member>
         <member name="M:Core.Api.PostsController.GetByPostId(System.Int32,System.String)">
             <summary>
-            Get Home page post
+            Get single post by Slug (CORS enabled)
             </summary>
             <param name="postId">post id path</param> 
             <param name="format">Otput format: html or markdown; default = html;</param>
@@ -231,7 +231,7 @@
         </member>
         <member name="M:Core.Api.PostsController.GetByHomePage(System.String)">
             <summary>
-            Get single post by Slug (CORS enabled)
+            Get Home page post
             </summary>
             <param name="format">Otput format: html or markdown; default = html;</param>
             <returns>Post model</returns>
