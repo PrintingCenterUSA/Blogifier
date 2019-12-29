@@ -498,7 +498,7 @@ namespace Core.Api
         /// <summary>
         /// Get single post by Slug (CORS enabled)
         /// </summary>
-        /// <param name="postId">post id path</param>
+        /// <param name="postId">post id path</param> 
         /// <param name="format">Otput format: html or markdown; default = html;</param>
         /// <returns>Post model</returns>
         [HttpGet("bypostid/{postId}")]
@@ -532,6 +532,35 @@ namespace Core.Api
                 var blog = await _data.CustomFields.GetBlogSettings();
                 return new PostModel { Blog = blog };
             }
+        }
+        /// <summary>
+        /// Get Home page post
+        /// </summary>
+        /// <param name="format">Otput format: html or markdown; default = html;</param>
+        /// <returns>Post model</returns>
+        [HttpGet("byhomepage")]
+        [EnableCors("AllowOrigin")]
+        public async Task<PostModel> GetByHomePage([FromQuery]string format = "html")
+        {
+            var model = await _data.BlogPosts.GetModel("home");
+            model.Blog = await _data.CustomFields.GetBlogSettings();
+
+            if (!User.Identity.IsAuthenticated)
+            {
+                model.Post.Author.Email = Constants.DummyEmail;
+
+                if (model.Older != null)
+                    model.Older.Author.Email = Constants.DummyEmail;
+                if (model.Newer != null)
+                    model.Newer.Author.Email = Constants.DummyEmail;
+            }
+
+            if (format.ToUpper() == "HTML")
+            {
+                model.Post.Description = model.Post.Description.MdToHtml();
+                model.Post.Content = model.Post.Content.MdToHtml();
+            }
+            return model;
         }
     }
 }
