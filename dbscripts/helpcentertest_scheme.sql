@@ -8,3 +8,7 @@ if not exists (select * from sys.all_columns where name='IdPath' and object_id=(
 	alter table help.blogposts add IdPath nvarchar(256) default '/'
 
 update help.blogposts set DisplayOrder=0 where DisplayOrder is null
+
+if not exists(select * from sys.all_columns where name='NavHeader' and OBJECT_ID= 
+(select OBJECT_ID from sys.objects where name='BlogPosts' and type='U'))
+	alter table help.BlogPosts add NavHeader nvarchar(80)
