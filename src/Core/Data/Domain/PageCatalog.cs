@@ -9,7 +9,8 @@ namespace Core.Data.Models
     {
         private List<PageCatalog> children;
         private BlogPost page;
-        public PageCatalog(BlogPost page, IEnumerable<BlogPost> allPages)
+        private string pageUrl;
+        public PageCatalog(BlogPost page, IEnumerable<BlogPost> allPages, PageCatalog parent = null)
         {
             this.page = page;
             children = new List<PageCatalog>();
@@ -22,17 +23,26 @@ namespace Core.Data.Models
             {
                 childPages = allPages.Where(eml => eml.ParentId == this.page.Id);
             }
+            if (parent == null)
+            {
+                this.pageUrl = "page";
+            }
+            else
+            {
+                this.pageUrl = parent.pageUrl + "/" + this.page.Slug;
+            }
+
             foreach (BlogPost childPage in childPages)
             {
-                PageCatalog child = new PageCatalog(childPage, allPages);
+                PageCatalog child = new PageCatalog(childPage, allPages,this);
                 this.children.Add(child);
             }
         }
-       
-       
+
+
         public IEnumerable<PageCatalog> Children
         {
-            get{
+            get {
                 return children;
             }
         }
@@ -41,7 +51,7 @@ namespace Core.Data.Models
             get
             {
                 return page;
-            }         
+            }
         }
         public int NodeID
         {
@@ -50,5 +60,13 @@ namespace Core.Data.Models
                 return this.page == null ? 0 : this.page.Id;
             }
         }
+        public string PageUrl
+        {
+            get
+            {
+                return this.pageUrl;
+            }
+        }
+
     }
 }

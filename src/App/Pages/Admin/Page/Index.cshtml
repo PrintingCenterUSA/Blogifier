@@ -32,11 +32,31 @@
          </form>
     </div>
     <div class="bf-body">
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Title</th>
+                    <th scope="col">Url</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="post in pageList.posts" :key="post.id" class="post-grid-col">
+                    <td><a :href="'page/edit?id=' + post.id">{{post.title}}</a></td>
+                    <td><a target="_blank" :href="webRoot  + post.pageUrl">{{post.pageUrl}}</a></td>
+                    <td>
+                        <button class="btn btn-danger" v-on:click="return remove(post.id)">@Localizer["delete"]</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
         <!-- Grid -->
-        <div class="bf-posts-grid d-flex" aria-label="posts">
+        <div class="bf-posts-grid d-block" aria-label="posts" style="display:none !important;">
             <div v-for="post in pageList.posts" :key="post.id" class="post-grid-col">
                 <div class="post-grid-item">
-                    <a class="item-link" :href="'page/edit?id=' + post.id" v-bind:style="{ backgroundImage: 'url(' + webRoot + post.cover + ')' }">
+                    <a class="item-link" :href="'page/edit?id=' + post.id">
                         <div class="item-title mt-auto">{{post.title}}</div>
                     </a>
                     <div class="item-info d-flex align-items-center">
@@ -63,13 +83,11 @@
             </div>
         </div>
         <!--/Grid -->
-
         <!-- Empty -->
         <div v-if="pageList.posts && pageList.posts.length === 0" class="bf-list-empty">
             @Localizer["not-found"]!
         </div>
         <!--/Empty -->
-
         <!-- Pagination -->
         <ul v-if="pageList.posts && pageList.posts.length > 0" class="bf-pagination d-flex">
             <li v-if="pageList.pager.showOlder" class="bf-pagination-item">
@@ -118,10 +136,37 @@
                             var pgr = this.pageList.pager;
                             this.cntFrom = pgr.currentPage == 1 ? 1 : (pgr.currentPage - 1) * pgr.itemsPerPage + 1;
                             this.cntTo = pgr.currentPage * pgr.itemsPerPage < pgr.total ? pgr.currentPage * pgr.itemsPerPage : pgr.total;
-                        }                       
+                        }
+                        for (var i = 0; i < this.pageList.posts.length; i++) {
+                            this.pageList.posts[i].pageUrl = this.getPageUrl(this.pageList.posts[i].id);
+                        }
                         $('#app').fadeIn();
                     })
                     .catch(function (error) { toastr.error(error); });
+            },
+            loadPageCatalog: function () {
+                var self = this;
+                var url = getUrl("api/posts/pageCatalog");
+                return axios.get(url).then(response => {
+                    this.pageCatalog = response.data;
+                    self.load();
+                }).catch(function (error) { toastr.error(error); });
+            },
+            getPageUrl: function (postId) {
+                var treeSearchF = function (data, postId) {
+                    if (data.page && data.page.id == postId) {
+                        return data.pageUrl;
+                    } else {
+                        for (var i = 0; i < data.children.length; i++) {
+                            result = treeSearchF(data.children[i], postId);
+                            if (result) {
+                                return result;
+                            }
+                        }
+                        return false;
+                    }
+                }
+                return treeSearchF(this.pageCatalog,postId);
             },
             publish: function(id, flag){
                 axios.put(webRoot + 'api/posts/publish?flag=' + flag + '&id=' + id)
@@ -198,7 +243,7 @@
         beforeMount() {
             if(fromQueryString('page')){ this.page = fromQueryString('page'); }
             if(fromQueryString('status')){ this.status = fromQueryString('status'); }
-            this.load();
+            this.loadPageCatalog();
         }
     })
     </script>
