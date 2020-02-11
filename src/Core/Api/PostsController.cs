@@ -92,7 +92,8 @@ namespace Core.Api
             {
                 var blog = await _data.CustomFields.GetBlogSettings();
                 IEnumerable<PostItem> results;
-                var pager = new Pager(page, blog.ItemsPerPage);
+                //var pager = new Pager(page, blog.ItemsPerPage);
+                var pager = new Pager(page, 1000);
                 int authorId = GetUserId(author);
 
                 results = await _data.BlogPosts.GetList(pager, authorId, category, include, !User.Identity.IsAuthenticated);
