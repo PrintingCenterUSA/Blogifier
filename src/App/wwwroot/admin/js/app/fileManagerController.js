@@ -104,10 +104,10 @@
             var src = asset.assetType === 0 ? webRoot + asset.url : webRoot + asset.image;
             var tag = '<div class="col-sm-6 col-md-4 col-lg-3">' +
                 '	<div class="item">' +
-                '		<div class="item-img" onclick="fileManagerController.pick(\'' + asset.url + '\'); return false"><img src="' + src + '" alt="' + asset.title + '" /></div>' +
+                '		<div class="item-img" onclick="fileManagerController.pick(\'' + asset.url + '\'); return false"><img src="' + src + '" alt="' + asset.title + '" title="' + asset.title +'" /></div>' +
                 '		<label class="custom-control custom-checkbox item-name">' +
                 '			<input type="checkbox" id="' + asset.url + '" class="custom-control-input item-check" onchange="fileManagerController.check(this)">' +
-                '			<span class="custom-control-label">' + asset.title + '</span>' +
+                '			<span class="custom-control-label" title="' + asset.title+'">' + asset.title + '</span>' +
                 '		</label>' +
                 '	</div>' +
                 '</div>';
