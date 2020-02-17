@@ -131,15 +131,19 @@
 
                 axios.get(url)
                     .then(response => {
-                        this.pageList = response.data;
-                        if(this.pageList && this.pageList.pager){
-                            var pgr = this.pageList.pager;
+                        var dataList = response.data;
+                        if(dataList && dataList.pager){
+                            var pgr = dataList.pager;
                             this.cntFrom = pgr.currentPage == 1 ? 1 : (pgr.currentPage - 1) * pgr.itemsPerPage + 1;
                             this.cntTo = pgr.currentPage * pgr.itemsPerPage < pgr.total ? pgr.currentPage * pgr.itemsPerPage : pgr.total;
                         }
-                        for (var i = 0; i < this.pageList.posts.length; i++) {
-                            this.pageList.posts[i].pageUrl = this.getPageUrl(this.pageList.posts[i].id);
+                        for (var i = 0; i < dataList.posts.length; i++) {
+                            dataList.posts[i].pageUrl = this.getPageUrl(dataList.posts[i].id);
                         }
+                        dataList.posts.sort(function (a, b) {
+                            return (''+a.pageUrl).localeCompare(b.pageUrl);
+                        });
+                         this.pageList = dataList;
                         $('#app').fadeIn();
                     })
                     .catch(function (error) { toastr.error(error); });
