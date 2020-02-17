@@ -110,18 +110,18 @@
 
         @RenderBody()
     </div>
-    <!--
+
     <script src="https://unpkg.com/vue/dist/vue.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://unpkg.com/vuelidate/dist/validators.min.js"></script>
     <script src="https://unpkg.com/vuelidate/dist/vuelidate.min.js"></script>
+
+    <!--
+            <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/vuelidate/dist/validators.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npmss/vuelidate/dist/vuelidate.min.js"></script>
     -->
-
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vuelidate/dist/validators.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npmss/vuelidate/dist/vuelidate.min.js"></script>
-
     <script src="~/admin/js/lib/jquery.min.js"></script>
     <script src="~/admin/js/lib/toastr.min.js"></script>
     <script src="~/admin/js/lib/popper.min.js"></script>
@@ -131,14 +131,14 @@
     <script src="~/admin/js/app/dataService.js"></script>
     <script src="~/admin/js/app/notificationsController.js"></script>
     <script>
-        var webRoot = '@Url.Content("~/")';
-        function isAdmin(){
-            return '@_isAdmin' === 'True' ? true : false;
-        }
-        function getUrl(str) {
-            return webRoot + str;
-        }
+            var webRoot = '@Url.Content("~/")';
+            function isAdmin(){
+                return '@_isAdmin' === 'True' ? true : false;
+            }
+            function getUrl(str) {
+                return webRoot + str;
+            }
     </script>
     @RenderSection("Scripts", false)
 </body>
-</html>
+    </html>
