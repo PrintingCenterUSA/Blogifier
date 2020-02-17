@@ -17,11 +17,11 @@ namespace Core.Data.Models
             IEnumerable<BlogPost> childPages;
             if (page == null)
             {
-                childPages = allPages.Where(eml => eml.ParentId == 0 && !eml.Slug.Equals("home"));
+                childPages = allPages.Where(eml => eml.ParentId == 0 && !eml.Slug.Equals("home")).OrderBy(eml => eml.DisplayOrder);
             }
             else
             {
-                childPages = allPages.Where(eml => eml.ParentId == this.page.Id);
+                childPages = allPages.Where(eml => eml.ParentId == this.page.Id).OrderBy(eml => eml.DisplayOrder);
             }
             if (parent == null)
             {

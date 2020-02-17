@@ -419,23 +419,23 @@ namespace Core.Data
                 var drafts = author > 0 ?
                     _db.BlogPosts.Where(p => p.Published == DateTime.MinValue && p.AuthorId == author).ToList() :
                     _db.BlogPosts.Where(p => p.Published == DateTime.MinValue).ToList();
-                items = items.Concat(drafts).ToList();
+                items = items.Concat(drafts).OrderBy(p => p.Slug).ToList();
             }
 
             if (include.ToUpper().Contains("F") || string.IsNullOrEmpty(include))
             {
                 var featured = author > 0 ?
-                    _db.BlogPosts.Where(p => p.Published > DateTime.MinValue && p.IsFeatured && p.AuthorId == author).OrderByDescending(p => p.Published).ToList() :
-                    _db.BlogPosts.Where(p => p.Published > DateTime.MinValue && p.IsFeatured).OrderByDescending(p => p.Published).ToList();
-                items = items.Concat(featured).ToList();
+                    _db.BlogPosts.Where(p => p.Published > DateTime.MinValue && p.IsFeatured && p.AuthorId == author).ToList() :
+                    _db.BlogPosts.Where(p => p.Published > DateTime.MinValue && p.IsFeatured).ToList();
+                items = items.Concat(featured).OrderBy(p => p.Slug).ToList();
             }
 
             if (include.ToUpper().Contains("P") || string.IsNullOrEmpty(include))
             {
                 var published = author > 0 ?
-                    _db.BlogPosts.Where(p => p.Published > DateTime.MinValue && !p.IsFeatured && p.AuthorId == author).OrderByDescending(p => p.Published).ToList() :
-                    _db.BlogPosts.Where(p => p.Published > DateTime.MinValue && !p.IsFeatured).OrderByDescending(p => p.Published).ToList();
-                items = items.Concat(published).ToList();
+                    _db.BlogPosts.Where(p => p.Published > DateTime.MinValue && !p.IsFeatured && p.AuthorId == author).ToList() :
+                    _db.BlogPosts.Where(p => p.Published > DateTime.MinValue && !p.IsFeatured).ToList();
+                items = items.Concat(published).OrderBy(p => p.Slug).ToList();
             }
 
             return items;

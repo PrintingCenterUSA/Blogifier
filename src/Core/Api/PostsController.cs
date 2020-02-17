@@ -48,7 +48,8 @@ namespace Core.Api
             {
                 var blog = await _data.CustomFields.GetBlogSettings();
                 IEnumerable<PostItem> results;
-                var pager = new Pager(page, blog.ItemsPerPage);
+                //var pager = new Pager(page, blog.ItemsPerPage);
+                var pager = new Pager(page, 1000);
                 var authorId = GetUserId(author);
 
                 results = await _data.BlogPosts.Search(pager, term, authorId, include, !User.Identity.IsAuthenticated);
@@ -133,7 +134,7 @@ namespace Core.Api
             {
                 var blog = await _data.CustomFields.GetBlogSettings();
                 IEnumerable<PostItem> results;
-                var pager = new Pager(page, blog.ItemsPerPage);
+                var pager = new Pager(page, 1000);
                 int authorId = GetUserId(author);
 
                 results = await _data.BlogPosts.GetPopular(pager, authorId);
@@ -474,7 +475,8 @@ namespace Core.Api
             {
                 var blog = await _data.CustomFields.GetBlogSettings();
                 IEnumerable<PostItem> results;
-                var pager = new Pager(page, blog.ItemsPerPage);
+               // var pager = new Pager(page, blog.ItemsPerPage);
+                var pager = new Pager(page, 1000);
                 var authorId = 0;
 
                 results = await _data.BlogPosts.Search(pager, term, authorId, include, !User.Identity.IsAuthenticated, currentPageId);
