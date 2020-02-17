@@ -9,7 +9,7 @@
         <div class="bf-posts-form-search">
             <input id="txtSearch" name="txtSearch" v-on:keyup.13="search" class="form-control form-control-sm form-control-rounded" placeholder="@Localizer["search"]...">
         </div>
-        <form id="frmPostFilter" class="bf-posts-filters">
+        <form id="frmPostFilter" class="bf-posts-filters" style="display:none;">
             <div class="filter-group">
                 <div class="filter-group-title"><span>@Localizer["status"]</span> <i class="fa fa-chevron-down d-block d-lg-none"></i></div>
                 <ul class="filter-group-list">
@@ -120,7 +120,8 @@
             page: 1,
             cntFrom: 0,
             cntTo: 0,
-            pageList: {}
+            pageList: {},
+            allPageList: {}
         },
         methods: {
             load: function () {
@@ -143,7 +144,8 @@
                         dataList.posts.sort(function (a, b) {
                             return (''+a.pageUrl).localeCompare(b.pageUrl);
                         });
-                         this.pageList = dataList;
+                        this.pageList = dataList;
+                        this.allPageList = JSON.parse(JSON.stringify(this.pageList));
                         $('#app').fadeIn();
                     })
                     .catch(function (error) { toastr.error(error); });
@@ -192,8 +194,8 @@
                         toastr.error(error);
                     });
             },
-            search: function(){
-                var term = $('#txtSearch').val();
+            search: function () {
+                @*var term = $('#txtSearch').val();
                 $('.bf-posts-form-search').submit();
                 if(!term)
                     return false;
@@ -202,7 +204,23 @@
                 if (this.status !== 'A') {
                     url += '&status=' + this.status;
                 }
-                window.location.href = url;
+                window.location.href = url;*@
+                var postsList = [];
+                var term = $('#txtSearch').val();
+                term = term.trim();
+                for (var i = 0; i < this.allPageList.posts.length; i++) {
+                    if (term) {
+                        if (this.allPageList.posts[i].title.indexOf(term) != -1 || (this.allPageList.posts[i].pageUrl && this.allPageList.posts[i].pageUrl.indexOf(term) != -1)) {
+                              postsList.push(this.allPageList.posts[i]);
+                        }
+                          
+                    } else {
+                        postsList.push(this.allPageList.posts[i]);
+                    }
+               }
+           
+                        this.pageList.posts = postsList;
+
             },
             filter: function (status) {
                 window.location.href = getUrl('admin/page?author=@user&status=' + status);
