@@ -208,9 +208,10 @@
                 var postsList = [];
                 var term = $('#txtSearch').val();
                 term = term.trim();
+                term = term.toLowerCase();
                 for (var i = 0; i < this.allPageList.posts.length; i++) {
                     if (term) {
-                        if (this.allPageList.posts[i].title.indexOf(term) != -1 || (this.allPageList.posts[i].pageUrl && this.allPageList.posts[i].pageUrl.indexOf(term) != -1)) {
+                        if ((this.allPageList.posts[i].title && this.allPageList.posts[i].title.toLowerCase().indexOf(term) != -1) || (this.allPageList.posts[i].pageUrl && this.allPageList.posts[i].pageUrl.toLowerCase().indexOf(term) != -1)) {
                               postsList.push(this.allPageList.posts[i]);
                         }
                           
