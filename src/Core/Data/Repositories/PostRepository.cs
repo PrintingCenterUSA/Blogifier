@@ -224,9 +224,9 @@ namespace Core.Data
                 }
             }
 
-            var post = _db.BlogPosts.Single(p => p.Slug == slug);
-            post.PostViews++;
-            await _db.SaveChangesAsync();
+            var post = _db.BlogPosts.Where(p => p.Slug == slug).FirstOrDefault();
+            //post.PostViews++;
+            //await _db.SaveChangesAsync();
 
             return await Task.FromResult(model);
         }
