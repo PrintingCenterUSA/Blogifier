@@ -39,3 +39,12 @@ html
     text-align: center;
     font-size: 3rem;
 }
+
+@media screen and (min-width: 992px)
+{
+    .post {
+        padding-left:0;
+        margin-bottom:0;
+    }
+    
+}
