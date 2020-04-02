@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,11 +20,13 @@ namespace Core.Api
     {
         IDataService _data;
         IEmailService _email;
+        private readonly IConfiguration _config;
 
-        public PostsController(IDataService data, IEmailService email)
+        public PostsController(IDataService data, IEmailService email, IConfiguration config)
         {
             _data = data;
             _email = email;
+            _config = config;
         }
 
         /// <summary>
@@ -328,7 +331,22 @@ namespace Core.Api
                     post.Slug = await GetSlug(post.Id, post.Title);
                 var saved = await _data.BlogPosts.SaveItem(post);
 
-                if(post.IsPublished && !alreadyPublished)
+                List<string> contents = new List<string>();
+                if(saved.Id == 7)
+                {
+                    string savePath = getSaveDataUrl();
+                    contents = ConvertContentTo(saved.Content);
+                    string content = "";
+                    //foreach (string str in contents)
+                    //{
+                    //    content += str;
+                    //}
+                    //System.IO.File.WriteAllText(savePath + saved.Title + ".txt", content);
+                    System.IO.File.WriteAllText(savePath + saved.Title + ".txt", contents[0]);
+
+                }
+
+                if (post.IsPublished && !alreadyPublished)
                 {
                     var savedPost = _data.BlogPosts.Single(p => p.Id == saved.Id);
                     await SendNewsletters(savedPost);
@@ -340,6 +358,50 @@ namespace Core.Api
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
+        }
+
+        string getSaveDataUrl()
+        {
+            var section = _config.GetSection(Constants.ConfigSectionKey);
+
+            return (section != null && !string.IsNullOrEmpty(section.GetValue<string>(Constants.ConfigSaveDataKey))) ?
+                section.GetValue<string>(Constants.ConfigSaveDataKey) :
+                ".\\data\\";
+        }
+
+        List<string> ConvertContentTo(string content) 
+        {
+            string[] strs = content.Split("\n\n");
+            string name = "";
+            string text = "";
+            List<string> result = new List<string>();
+            string data = "";
+            foreach (string str in strs)
+            {
+                data = "";
+                if (str == "---" || str.IndexOf("####") == -1)
+                {
+                    continue;
+                }
+                name = str.Split("\n")[0].Replace("####", "");
+                text = str.Split("\n")[1];
+
+                data +="\n<script type=\"application / ld + json\">\n";
+                data += "{\n";
+                data += "   \"@context\": \"https://schema.org\",\n";
+                data += "   \"@type\": \"FAQPage\",\n";
+                data += "   \"mainEntity\": {\n";
+                data += "       \"@type\": \"Question\",\n";
+                data += "       \"name\": \"" + name + " \",\n";
+                data += "       \"acceptedAnswer\": {\n";
+                data += "           \"@type\": \"Answer\",\n";
+                data += "           \"text\": " + text + "\n";
+                data += "       }\n";
+                data += "   }\n}\n";
+                data += "</script>\n";
+                result.Add(data);
+            }
+            return result;
         }
 
         /// <summary>

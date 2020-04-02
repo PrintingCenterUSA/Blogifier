@@ -5,6 +5,7 @@
         public static string ConfigSectionKey = "Blogifier";
         public static string ConfigRepoKey = "GithubRepoUrl";
         public static string ConfigNotificationsKey = "GithubNotificationsUrl";
+        public static string ConfigSaveDataKey = "SaveDataUrl";
 
         public static string NewestVersion = "last-version";
         public static string UpgradeDirectory = "_upgrade";
