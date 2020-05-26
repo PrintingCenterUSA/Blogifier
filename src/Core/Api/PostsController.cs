@@ -342,7 +342,7 @@ namespace Core.Api
                     //    content += str;
                     //}
                     //System.IO.File.WriteAllText(savePath + saved.Title + ".txt", content);
-                    System.IO.File.WriteAllText(savePath + saved.Title + ".txt", contents[0]);
+                    System.IO.File.WriteAllText(savePath, contents[0]);
 
                 }
 
